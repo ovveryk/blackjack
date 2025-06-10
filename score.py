@@ -1,0 +1,1 @@
+# Функції підрахунку очок (calculate_score, compare_scores)
