@@ -1,5 +1,4 @@
 # Головна функція гри
-import random
 from score import calculate_score
 from cards import deck, closed_card
 
@@ -7,7 +6,7 @@ def main():
     print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
 
     computer_hand = deck[:2]
-    hand = deck[3:5]
+    hand = deck[2:4]
 
     print(f"\nДилер: {computer_hand[0]} {closed_card}", f"\nТвої карти: {hand[0]} {hand[1]}", )
     score = calculate_score(hand)
