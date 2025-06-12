@@ -1,16 +1,16 @@
 # Головна функція гри
 from score import calculate_score
 from cards import deck, closed_card
+from hit import hit_card
+
+user = True
+computer_hand = hit_card()
+
 
 def main():
     print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
+    print(computer_hand)
 
-    computer_hand = deck[:2]
-    hand = deck[2:4]
-
-    print(f"\nДилер: {computer_hand[0]} {closed_card}", f"\nТвої карти: {hand[0]} {hand[1]}", )
-    score = calculate_score(hand)
-    print(f"Твої очки {score}")
 
 main()
 
