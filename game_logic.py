@@ -5,14 +5,20 @@ from score import calculate_score
 def winner(player_hand, dealer_hand):
     player_score = calculate_score(player_hand)
     dealer_score = calculate_score(dealer_hand)
+    print("Winer", "Playeer:", player_score, "Dealer:" , dealer_score)
 
     if player_score > 21:
-        return "Ти програв! Перебір. "
+        print("Ти програв! Перебір. ")
+        return
     elif dealer_score > 21:
-        return "Ти виграв! Дилер перебрав. "
+        print("Ти виграв! Дилер перебрав. ")
+        return
     elif player_score == dealer_score:
-        return "Нічия! "
+        print("Нічия! ")
+        return
     elif player_score > dealer_score:
-        return "Ти виграв! "
+        print("Ти виграв! ")
+        return
     else:
-        return "Ти програв! "
+        print("Ти програв! ")
+        return

@@ -4,14 +4,10 @@ from score import calculate_score
 
 
 
-def hit_card():
-    user_cards = deck[2:4]
-    counter = 4
+def hit_card( user_cards):
+    counter = 3
     game_over = False
-    score = calculate_score(user_cards)
-
-    if len(user_cards) == 2 and score == 22 or score == 21:
-        return user_cards
+    # score = calculate_score(user_cards)
 
     while not game_over:
 
