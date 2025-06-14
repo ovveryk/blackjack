@@ -5,7 +5,7 @@ from score import calculate_score
 def winner(player_hand, dealer_hand):
     player_score = calculate_score(player_hand)
     dealer_score = calculate_score(dealer_hand)
-    print(f"Player: {player_score}, Dealer: {dealer_score}")
+    print(f"Твої очки: {player_score}, Очки дилера: {dealer_score}")
 
     if player_score > 21:
         print("Ти програв! Перебір. ")

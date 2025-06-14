@@ -24,8 +24,8 @@ def main():
         dealer_hand = deck[:2]
         calculate_score_user = calculate_score(user_hand)
         calculate_score_dealer = calculate_score(dealer_hand)
-        print(user_hand, dealer_hand)
-        print(calculate_score_user, calculate_score_dealer)
+        print(f"Карти дилера: {dealer_hand[0], closed_card} \nТвої карти: {user_hand}, в тебе {calculate_score_user} очок ")
+        print()
 
 
         if len(user_hand) == 2 and len(dealer_hand) == 2:
@@ -65,9 +65,11 @@ def main():
 
         dealer_hit(dealer_hand)
         winner(user_hand, dealer_hand)
+        print(f"Твоя карти {user_hand}, \nКарти дилера:{dealer_hand}")
 
         print("Хочеш зіграти ще раз? y/n")
         new_game = input()
+
         if new_game == "n":
             print("Дякую за гру! Заходи ще програти гроші :) ")
             break

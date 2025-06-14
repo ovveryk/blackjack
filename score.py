@@ -8,11 +8,9 @@ def calculate_score(hand):
     aces = 0
 
     for card in hand:
-        # print("Card:", card)
         for suit in ['\u2660', '\u2665', '\u2666', '\u2663']:
             card = card.replace(suit, '')
 
-        # print(card)
         calc += CARD_NAMES.get(card, 0)
 
         if card == 'A':
