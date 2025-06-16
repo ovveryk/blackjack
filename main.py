@@ -13,7 +13,7 @@ def main():
 
     print("Вітаю! Хочеш почати гру в BlackJack? y/n")
     play_game = input()
-    if play_game == "n":
+    if play_game.lower() == "n" or play_game.lower() != "y":
         print("Шкода, що не захотіли програти гроші :) ")
         return
     
@@ -34,27 +34,29 @@ def main():
                     print("Нічия! Обидва мають BlackJack! ")
                     print("Хочеш зіграти ще раз? y/n")
                     new_game = input()
-                    if new_game == "n":
+                    if new_game.lower() == "n":
                         print("Дякую за гру! Заходи ще програти гроші :) ")
                         break
                     else:
-                        continue
+                        if new_game.lower() == "y":
+                            continue
 
             elif calculate_score_user == 22 or calculate_score_user == 21:
                     print("BlackJack User")
                     print("Хочеш зіграти ще раз? y/n")
                     new_game = input()
-                    if new_game == "n":
+                    if new_game.lower() == "n":
                         print("Дякую за гру! Заходи ще програти гроші :) ")
                         break
                     else:
-                        continue
+                        if new_game.lower() == "y":
+                            continue
 
             elif calculate_score_dealer == 22 or calculate_score_dealer == 21:
                     print("BlackJack Dealer")
                     print("Хочеш зіграти ще раз? y/n")
                     new_game = input()
-                    if new_game == "n":
+                    if new_game.lower() == "n":
                         print("Дякую за гру! Заходи ще програти гроші :) ")
                         break
                     else:
@@ -65,12 +67,12 @@ def main():
 
         dealer_hit(dealer_hand)
         winner(user_hand, dealer_hand)
-        print(f"Твоя карти {user_hand}, \nКарти дилера:{dealer_hand}")
+        print(f"Твої карти {user_hand}, \nКарти дилера:{dealer_hand}")
 
         print("Хочеш зіграти ще раз? y/n")
         new_game = input()
 
-        if new_game == "n":
+        if new_game.lower() == "n":
             print("Дякую за гру! Заходи ще програти гроші :) ")
             break
 

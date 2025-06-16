@@ -11,7 +11,7 @@ def hit_card( user_cards):
     while not game_over:
 
         user_deal = input("Введіть 'Y', щоб взяти карту, або 'N' щоб зупинитися: ")
-        if user_deal == "y":
+        if user_deal.lower() == "y":
             counter +=1
             user_cards.append(deck[counter])
             score = calculate_score(user_cards)
