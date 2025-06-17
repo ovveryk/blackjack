@@ -24,7 +24,7 @@ def main():
         dealer_hand = deck[:2]
         calculate_score_user = calculate_score(user_hand)
         calculate_score_dealer = calculate_score(dealer_hand)
-        print(f"Карти дилера: {dealer_hand[0], closed_card} \nТвої карти: {user_hand}, в тебе {calculate_score_user} очок ")
+        print(f"Карти дилера: {dealer_hand[0], closed_card}, в дилера {calculate_score([dealer_hand[0]])} очок \nТвої карти: {user_hand}, в тебе {calculate_score_user} очок ")
         print()
 
 
