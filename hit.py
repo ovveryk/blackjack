@@ -11,13 +11,16 @@ def hit_card( user_cards):
     while not game_over:
 
         user_deal = input("Введіть 'Y', щоб взяти карту, або 'N' щоб зупинитися: ")
+        print("============================")
         if user_deal.lower() == "y":
             counter +=1
             user_cards.append(deck[counter])
             score = calculate_score(user_cards)
             print(f"Твоя карта: [{deck[counter]}],\nТвої карти {user_cards} маєш {score} очок")
+            print("============================")
             if score > 21:
                 print("Перебір, Ти програв! :(")
+                print("============================")
                 game_over = True
 
         else:
