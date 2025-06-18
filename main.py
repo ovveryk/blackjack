@@ -41,23 +41,32 @@ separator.grid(row=2, column=0, columnspan=2, sticky="ew", pady=10)
 cards_frame = Frame(root, bg="#006400")
 cards_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", pady=10)
 
-dealer_cards_label = Label(cards_frame, text="Карти дилера:", font=("Helvetica", 16), bg="#006400", fg="white")
-dealer_cards_label.pack(anchor="center", pady=(0, 5))
 
-dealer_cards = Label(cards_frame, text="тут карти дилера", font=("Helvetica", 32), bg="#006400", fg="white")
-dealer_cards.pack(anchor="center")
+player_column = Frame(cards_frame, bg='#006400')
+player_column.pack(side="left", fill="both",expand=True,padx=20)
 
-dealer_score_label = Label(cards_frame, text="Очки: ?", font=("Helvetica", 16), bg="#006400", fg="white")
-dealer_score_label.pack(anchor="center")
 
-player_cards_label = Label(cards_frame, text="Карти гравця:", font=("Helvetica", 16), bg="#006400", fg="white")
-player_cards_label.pack(anchor="center", pady=(0, 5))
+dealer_column = Frame(cards_frame, bg='#006400')
+dealer_column.pack(side="right",fill="both",expand=True, padx=20)
 
-player_cards = Label(cards_frame, text="тут карти гравця", font=("Helvetica", 32), bg="#006400", fg="white")
-player_cards.pack(anchor="center", pady=(0, 20))
 
-player_score_label = Label(cards_frame, text="Очки: 21", font=("Helvetica", 16), bg="#006400", fg="white")
-player_score_label.pack(anchor="center", pady=(0, 20))
+dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 16), bg="#006400", fg="white")
+dealer_cards_label.pack(anchor="e", pady=(0, 5))
+
+dealer_cards = Label(dealer_column, text="тут карти дилера", font=("Helvetica", 32), bg="#006400", fg="white")
+dealer_cards.pack(anchor="e", pady=(0, 20))
+
+dealer_score_label = Label(dealer_column, text="Очки: 32", font=("Helvetica", 16), bg="#006400", fg="white")
+dealer_score_label.pack(anchor="e")
+
+player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 16), bg="#006400", fg="white")
+player_cards_label.pack(anchor="w", pady=(0, 5))
+
+player_cards = Label(player_column, text="тут карти гравця", font=("Helvetica", 32), bg="#006400", fg="white")
+player_cards.pack(anchor="w", pady=(0, 20))
+
+player_score_label = Label(player_column, text="Очки: 21", font=("Helvetica", 16), bg="#006400", fg="white")
+player_score_label.pack(anchor="w", pady=(0, 20))
 
 
 buttons_frame = Frame(root, bg="#006400")
