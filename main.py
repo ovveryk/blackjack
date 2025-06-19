@@ -21,6 +21,16 @@ def end_game():
     btn_stand.configure(state="disabled")
 
 
+def dealer_first_card():
+    dealer_cards.configure(text=[dealer_hand[0], closed_card])
+    dealer_score_label.configure(text=f"Очки: {calculate_score([dealer_hand[0]])}")
+
+
+def dealer_full_cards():
+    dealer_cards.configure(text=dealer_hand)
+    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+
+
 def reset_game():
     btn_hit.configure(state="normal")
     btn_stand.configure(state="normal")
@@ -28,9 +38,7 @@ def reset_game():
     game_result_label.configure(text="")
     player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
-
-    dealer_cards.configure(text=dealer_hand)
-    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+    dealer_first_card()
 
 
 def update_user_hand():
@@ -58,13 +66,24 @@ def update_user_hand():
 def update_dealer_hand():
     global dealer_hand, deck_index
     dealer_hand = dealer_hit(dealer_hand, deck_index)
+    dealer_full_cards()
+    player_score = calculate_score(user_hand)
+    dealer_score = calculate_score(dealer_hand)
+    if player_score == 21 and dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
+        end_game()
+        game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
+        return 
     
+    elif dealer_score == 21 and len(dealer_hand) == 2:
+        end_game()
+        game_result_label.configure(text="BlackJack! Дилер виграв!")
+        return
+
     dealer_cards.configure(text=dealer_hand)
     dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
     end_game()
     return
 
-    
 
 def blackjack_new():
     global dealer_hand, user_hand
@@ -74,18 +93,16 @@ def blackjack_new():
 
     if player_score == 21 and len(user_hand) == 2:
         end_game()
+        dealer_full_cards()
         game_result_label.configure(text="BlackJack! Ти виграв!")
-        return
-    
-    elif dealer_score == 21 and len(dealer_hand) == 2:
+        return True
+
+    elif player_score == 21 and dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
         end_game()
-        game_result_label.configure(text="BlackJack! Дилер виграв!")
-        return
-    
-    elif player_score == 21 or dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
-        end_game()
+        dealer_full_cards()
         game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
-        return
+        return True
+    return False
 
 def start_new_game():
     global counter, dealer_hand,user_hand, deck
@@ -98,8 +115,6 @@ def start_new_game():
 
     player_score_label.configure(text=f"Очки: {calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
-    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
-    dealer_cards.configure(text=dealer_hand)
 
     if blackjack_new():
         dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
@@ -185,6 +200,7 @@ btn_new.grid(row=0, column=2, padx=10)
 game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#006400", fg="white")
 game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 
+dealer_first_card()
 root.mainloop()
 
 
