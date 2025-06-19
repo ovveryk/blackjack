@@ -7,6 +7,33 @@ from dealer import dealer_hit
 import random
 from tkinter import *
 
+
+
+
+# print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
+
+random.shuffle(deck)
+print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
+counter = 4
+
+dealer_hand = deck[:2]
+user_hand = deck[2:4]
+
+
+
+def update_user_hand():
+    global user_hand, counter
+    user_hand.append(deck[counter])
+    counter +=1
+
+    player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
+    player_cards.configure(text=user_hand)
+
+    pass
+
+
+    
+
 root = Tk()
 root.title("BlackJack")
 root.minsize(width=600, height=550)
@@ -53,7 +80,7 @@ dealer_column.pack(side="right",fill="both",expand=True, padx=20)
 dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 16), bg="#006400", fg="white")
 dealer_cards_label.pack(anchor="e", pady=(0, 5))
 
-dealer_cards = Label(dealer_column, text="тут карти дилера", font=("Helvetica", 32), bg="#006400", fg="white")
+dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 32), bg="#006400", fg="white")
 dealer_cards.pack(anchor="e", pady=(0, 20))
 
 dealer_score_label = Label(dealer_column, text="Очки: 32", font=("Helvetica", 16), bg="#006400", fg="white")
@@ -62,20 +89,20 @@ dealer_score_label.pack(anchor="e")
 player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 16), bg="#006400", fg="white")
 player_cards_label.pack(anchor="w", pady=(0, 5))
 
-player_cards = Label(player_column, text="тут карти гравця", font=("Helvetica", 32), bg="#006400", fg="white")
+player_cards = Label(player_column, text=user_hand, font=("Helvetica", 32), bg="#006400", fg="white")
 player_cards.pack(anchor="w", pady=(0, 20))
 
-player_score_label = Label(player_column, text="Очки: 21", font=("Helvetica", 16), bg="#006400", fg="white")
+player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 16), bg="#006400", fg="white")
 player_score_label.pack(anchor="w", pady=(0, 20))
 
 
 buttons_frame = Frame(root, bg="#006400")
 buttons_frame.grid(row=4, column=0, columnspan=2, pady=20)
 
-btn_hit = Button(buttons_frame, text="Взяти карту", font=("Helvetica", 14), width=15, bg="#228B22", fg="white")
+btn_hit = Button(buttons_frame, text="Взяти карту", font=("Helvetica", 14), width=15, bg="#228B22", fg="white", command=update_user_hand)
 btn_hit.grid(row=0, column=0, padx=10)
 
-btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white")
+btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white" )
 btn_stand.grid(row=0, column=1, padx=10)
 
 btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white")
