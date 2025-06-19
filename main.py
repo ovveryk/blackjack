@@ -8,38 +8,47 @@ import random
 from tkinter import *
 
 
-
-
-# print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
-
 random.shuffle(deck)
 print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
 counter = 4
-
+result_messege = None
 dealer_hand = deck[:2]
 user_hand = deck[2:4]
 
+
+def end_game():
+    btn_hit.configure(state="disabled")
+    btn_stand.configure(state="disabled")
+
+
+def reset_game():
+    btn_hit.configure(state="normal")
+    btn_stand.configure(state="normal")
+
+    game_result_label.configure(text="")
+    player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
+    player_cards.configure(text=user_hand)
 
 
 def update_user_hand():
     global user_hand, counter
 
     if calculate_score(user_hand) < 21:
-        print("Меньше 21")
         user_hand.append(deck[counter])
         counter +=1
 
         player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
         player_cards.configure(text=user_hand)
+
         if calculate_score(user_hand) > 21:
-            btn_hit.configure(state="disabled")
-            btn_stand.configure(state="disabled")
+            end_game()
+            game_result_label.configure(text="Перебір")
             return
 
         return
     
     if calculate_score(user_hand > 21):
-        print("Більше 21")
+        print("Перебір")
         return
     
 
@@ -51,15 +60,9 @@ def start_new_game():
     dealer_hand = deck[:2]
     user_hand = deck[2:4]   
 
-    btn_hit.configure(state="normal")
-    btn_stand.configure(state="normal")
-
-    player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
-    player_cards.configure(text=user_hand)
+    reset_game()
 
 
-
-    
 
 root = Tk()
 root.title("BlackJack")
@@ -134,6 +137,9 @@ btn_stand.grid(row=0, column=1, padx=10)
 
 btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white", command=start_new_game)
 btn_new.grid(row=0, column=2, padx=10)
+
+game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#006400", fg="white")
+game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 
 root.mainloop()
 
