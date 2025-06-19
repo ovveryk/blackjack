@@ -23,13 +23,40 @@ user_hand = deck[2:4]
 
 def update_user_hand():
     global user_hand, counter
-    user_hand.append(deck[counter])
-    counter +=1
+
+    if calculate_score(user_hand) < 21:
+        print("Меньше 21")
+        user_hand.append(deck[counter])
+        counter +=1
+
+        player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
+        player_cards.configure(text=user_hand)
+        if calculate_score(user_hand) > 21:
+            btn_hit.configure(state="disabled")
+            btn_stand.configure(state="disabled")
+            return
+
+        return
+    
+    if calculate_score(user_hand > 21):
+        print("Більше 21")
+        return
+    
+
+def start_new_game():
+    global counter, dealer_hand,user_hand, deck
+
+    counter = 4
+    random.shuffle(deck)
+    dealer_hand = deck[:2]
+    user_hand = deck[2:4]   
+
+    btn_hit.configure(state="normal")
+    btn_stand.configure(state="normal")
 
     player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
 
-    pass
 
 
     
@@ -105,7 +132,7 @@ btn_hit.grid(row=0, column=0, padx=10)
 btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white" )
 btn_stand.grid(row=0, column=1, padx=10)
 
-btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white")
+btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white", command=start_new_game)
 btn_new.grid(row=0, column=2, padx=10)
 
 root.mainloop()
