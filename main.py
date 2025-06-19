@@ -9,7 +9,7 @@ from tkinter import *
 
 
 random.shuffle(deck)
-print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
+# print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
 deck_index = 4
 result_messege = None
 dealer_hand = deck[:2]
@@ -29,6 +29,9 @@ def reset_game():
     player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
 
+    dealer_cards.configure(text=dealer_hand)
+    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+
 
 def update_user_hand():
     global user_hand, deck_index
@@ -47,10 +50,20 @@ def update_user_hand():
             return
 
         return
-    
+
     if calculate_score(user_hand > 21):
         print("Перебір")
         return
+    
+def update_dealer_hand():
+    global dealer_hand, deck_index
+    dealer_hand = dealer_hit(dealer_hand, deck_index)
+    
+    dealer_cards.configure(text=dealer_hand)
+    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+    end_game()
+    return
+
     
 
 def blackjack_new():
@@ -163,7 +176,7 @@ buttons_frame.grid(row=4, column=0, columnspan=2, pady=20)
 btn_hit = Button(buttons_frame, text="Взяти карту", font=("Helvetica", 14), width=15, bg="#228B22", fg="white", command=update_user_hand)
 btn_hit.grid(row=0, column=0, padx=10)
 
-btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white" )
+btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white" , command=update_dealer_hand)
 btn_stand.grid(row=0, column=1, padx=10)
 
 btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white", command=start_new_game)

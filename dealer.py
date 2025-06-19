@@ -1,9 +1,8 @@
 from cards import deck
 from score import calculate_score
 
-def dealer_hit(dealer_cards):
-
-    counter = 2
+def dealer_hit(dealer_cards, counter):
+    
     game_over = False
     score = calculate_score(dealer_cards)
 
