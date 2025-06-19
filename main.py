@@ -53,6 +53,27 @@ def update_user_hand():
         return
     
 
+def blackjack_new():
+    global dealer_hand, user_hand
+
+    player_score = calculate_score(user_hand)
+    dealer_score = calculate_score(dealer_hand)
+
+    if player_score == 21 and len(user_hand) == 2:
+        end_game()
+        game_result_label.configure(text="BlackJack! Ти виграв!")
+        return
+    
+    elif dealer_score == 21 and len(dealer_hand) == 2:
+        end_game()
+        game_result_label.configure(text="BlackJack! Дилер виграв!")
+        return
+    
+    elif player_score == 21 or dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
+        end_game()
+        game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
+        return
+
 def start_new_game():
     global counter, dealer_hand,user_hand, deck
 
@@ -60,9 +81,18 @@ def start_new_game():
     random.shuffle(deck)
     dealer_hand = deck[:2]
     user_hand = deck[2:4]   
-
     reset_game()
 
+    player_score_label.configure(text=f"Очки: {calculate_score(user_hand)}")
+    player_cards.configure(text=user_hand)
+    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+    dealer_cards.configure(text=dealer_hand)
+
+    if blackjack_new():
+        dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+        dealer_cards.configure(text=dealer_hand)
+
+blackjack_new()
 
 
 root = Tk()
@@ -114,7 +144,7 @@ dealer_cards_label.pack(anchor="e", pady=(0, 5))
 dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 32), bg="#006400", fg="white")
 dealer_cards.pack(anchor="e", pady=(0, 20))
 
-dealer_score_label = Label(dealer_column, text="Очки: 32", font=("Helvetica", 16), bg="#006400", fg="white")
+dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 16), bg="#006400", fg="white")
 dealer_score_label.pack(anchor="e")
 
 player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 16), bg="#006400", fg="white")
