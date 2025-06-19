@@ -10,7 +10,7 @@ from tkinter import *
 
 random.shuffle(deck)
 print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
-counter = 4
+deck_index = 4
 result_messege = None
 dealer_hand = deck[:2]
 user_hand = deck[2:4]
@@ -31,17 +31,18 @@ def reset_game():
 
 
 def update_user_hand():
-    global user_hand, counter
+    global user_hand, deck_index
 
     if calculate_score(user_hand) < 21:
-        user_hand.append(deck[counter])
-        counter +=1
+        user_hand.append(deck[deck_index])
+        deck_index += 1
 
         player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
         player_cards.configure(text=user_hand)
 
         if calculate_score(user_hand) > 21:
             end_game()
+            
             game_result_label.configure(text="Перебір")
             return
 
