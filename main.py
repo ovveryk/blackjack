@@ -9,16 +9,19 @@ from tkinter import *
 
 
 random.shuffle(deck)
-# print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
 deck_index = 4
 result_messege = None
 dealer_hand = deck[:2]
 user_hand = deck[2:4]
+player_score = 0
+dealer_score = 0
 
 
 def end_game():
     btn_hit.configure(state="disabled")
     btn_stand.configure(state="disabled")
+    btn_new.configure(state="normal")
+    
 
 
 def dealer_first_card():
@@ -34,6 +37,7 @@ def dealer_full_cards():
 def reset_game():
     btn_hit.configure(state="normal")
     btn_stand.configure(state="normal")
+    btn_new.configure(state="disabled")
 
     game_result_label.configure(text="")
     player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
@@ -42,9 +46,9 @@ def reset_game():
 
 
 def update_user_hand():
-    global user_hand, deck_index
+    global user_hand, deck_index, dealer_score
 
-    if calculate_score(user_hand) < 21:
+    if calculate_score(user_hand) <= 21:
         user_hand.append(deck[deck_index])
         deck_index += 1
 
@@ -55,54 +59,78 @@ def update_user_hand():
             end_game()
             
             game_result_label.configure(text="Перебір")
+            dealer_score += 1
+            dealer_win.configure(text=f"Дилер: {dealer_score}")
+            dealer_full_cards()
             return
 
         return
-
-    if calculate_score(user_hand > 21):
-        print("Перебір")
-        return
+    
     
 def update_dealer_hand():
-    global dealer_hand, deck_index
+    global dealer_hand, deck_index, dealer_score, player_score, user_hand
     dealer_hand = dealer_hit(dealer_hand, deck_index)
+    d_score = calculate_score(dealer_hand)
     dealer_full_cards()
-    player_score = calculate_score(user_hand)
-    dealer_score = calculate_score(dealer_hand)
-    if player_score == 21 and dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
-        end_game()
-        game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
-        return 
-    
-    elif dealer_score == 21 and len(dealer_hand) == 2:
-        end_game()
-        game_result_label.configure(text="BlackJack! Дилер виграв!")
-        return
 
     dealer_cards.configure(text=dealer_hand)
     dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
-    end_game()
+
+    if d_score == 21 and len(dealer_hand) == 2:
+        dealer_score += 1
+        game_result_label.configure(text="BlackJack! Дилер виграв!")
+        dealer_win.configure(text=f"Дилер: {dealer_score}")
+        end_game()
+        return
+    
+    message, win = winner(user_hand, dealer_hand)
+
+    if win == "dealer":
+
+        dealer_score += 1
+        game_result_label.configure(text=message)
+        dealer_win.configure(text=f"Дилер: {dealer_score}")
+        end_game()
+        return
+
+    if win == "draw":
+         dealer_full_cards()
+         game_result_label.configure(text="Нічия")
+         end_game()
+         return
+    
+    if win == "user":
+         
+        player_score += 1
+        game_result_label.configure(text=message)
+        player_win.configure(text=f"Гравець: {player_score}")  
+        end_game()
+        return
+    
     return
 
-
 def blackjack_new():
-    global dealer_hand, user_hand
+    global dealer_hand, user_hand, player_score, dealer_score
 
-    player_score = calculate_score(user_hand)
-    dealer_score = calculate_score(dealer_hand)
+    pl_score = calculate_score(user_hand)
+    d_score = calculate_score(dealer_hand)
 
-    if player_score == 21 and len(user_hand) == 2:
-        end_game()
-        dealer_full_cards()
-        game_result_label.configure(text="BlackJack! Ти виграв!")
-        return True
-
-    elif player_score == 21 and dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
+    if pl_score == 21 and d_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
         end_game()
         dealer_full_cards()
         game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
         return True
+
+    elif pl_score == 21 and len(user_hand) == 2:
+        end_game()
+        dealer_full_cards()
+        game_result_label.configure(text="BlackJack! Ти виграв!")
+        player_score += 1
+        player_win.configure(text=f"Гравець: {player_score}")
+        return True
+    
     return False
+
 
 def start_new_game():
     global counter, dealer_hand,user_hand, deck
@@ -111,6 +139,7 @@ def start_new_game():
     random.shuffle(deck)
     dealer_hand = deck[:2]
     user_hand = deck[2:4]   
+
     reset_game()
 
     player_score_label.configure(text=f"Очки: {calculate_score(user_hand)}")
@@ -125,8 +154,8 @@ blackjack_new()
 
 root = Tk()
 root.title("BlackJack")
-root.minsize(width=600, height=550)
-root.geometry("800x600")
+root.minsize(width=1200, height=700)
+root.geometry("1200x700")
 root.configure(bg="#006400")
 
 root.grid_columnconfigure(0, weight=1)
@@ -143,10 +172,10 @@ main_header.pack()
 score_frame = Frame(root, bg="#006400")
 score_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
 
-player_win = Label(score_frame, text="Гравець: 0", font=("Helvetica", 18), bg="#006400", fg="white")
+player_win = Label(score_frame, text="Гравець: 0", font=("Helvetica", 25), bg="#006400", fg="white")
 player_win.pack(side="left", padx=50)
 
-dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 18), bg="#006400", fg="white")
+dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 25), bg="#006400", fg="white")
 dealer_win.pack(side="right", padx=50)
 
 
@@ -166,22 +195,22 @@ dealer_column = Frame(cards_frame, bg='#006400')
 dealer_column.pack(side="right",fill="both",expand=True, padx=20)
 
 
-dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 16), bg="#006400", fg="white")
+dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 25), bg="#006400", fg="white")
 dealer_cards_label.pack(anchor="e", pady=(0, 5))
 
-dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 32), bg="#006400", fg="white")
+dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 90), bg="#006400", fg="white")
 dealer_cards.pack(anchor="e", pady=(0, 20))
 
-dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 16), bg="#006400", fg="white")
+dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 25), bg="#006400", fg="white")
 dealer_score_label.pack(anchor="e")
 
-player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 16), bg="#006400", fg="white")
+player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 25), bg="#006400", fg="white")
 player_cards_label.pack(anchor="w", pady=(0, 5))
 
-player_cards = Label(player_column, text=user_hand, font=("Helvetica", 32), bg="#006400", fg="white")
+player_cards = Label(player_column, text=user_hand, font=("Helvetica", 90), bg="#006400", fg="white")
 player_cards.pack(anchor="w", pady=(0, 20))
 
-player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 16), bg="#006400", fg="white")
+player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 25), bg="#006400", fg="white")
 player_score_label.pack(anchor="w", pady=(0, 20))
 
 
@@ -200,6 +229,7 @@ btn_new.grid(row=0, column=2, padx=10)
 game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#006400", fg="white")
 game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 
+btn_new.configure(state="disabled")
 dealer_first_card()
 root.mainloop()
 
