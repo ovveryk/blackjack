@@ -133,9 +133,9 @@ def blackjack_new():
 
 
 def start_new_game():
-    global counter, dealer_hand,user_hand, deck
+    global counter, dealer_hand,user_hand, deck, deck_index
 
-    counter = 4
+    deck_index = 4
     random.shuffle(deck)
     dealer_hand = deck[:2]
     user_hand = deck[2:4]   
