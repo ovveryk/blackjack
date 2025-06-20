@@ -58,7 +58,7 @@ def update_user_hand():
         if calculate_score(user_hand) > 21:
             end_game()
             
-            game_result_label.configure(text="Перебір")
+            game_result_label.configure(text="Перебір", fg="red")
             dealer_score += 1
             dealer_win.configure(text=f"Дилер: {dealer_score}")
             dealer_full_cards()
@@ -78,7 +78,7 @@ def update_dealer_hand():
 
     if d_score == 21 and len(dealer_hand) == 2:
         dealer_score += 1
-        game_result_label.configure(text="BlackJack! Дилер виграв!")
+        game_result_label.configure(text="BlackJack! Дилер виграв!", fg="red")
         dealer_win.configure(text=f"Дилер: {dealer_score}")
         end_game()
         return
@@ -88,21 +88,21 @@ def update_dealer_hand():
     if win == "dealer":
 
         dealer_score += 1
-        game_result_label.configure(text=message)
+        game_result_label.configure(text=message, fg="red")
         dealer_win.configure(text=f"Дилер: {dealer_score}")
         end_game()
         return
 
     if win == "draw":
          dealer_full_cards()
-         game_result_label.configure(text="Нічия")
+         game_result_label.configure(text="Нічия", fg="white")
          end_game()
          return
     
     if win == "user":
          
         player_score += 1
-        game_result_label.configure(text=message)
+        game_result_label.configure(text=message, fg="#00FF00")
         player_win.configure(text=f"Гравець: {player_score}")  
         end_game()
         return
@@ -118,13 +118,13 @@ def blackjack_new():
     if pl_score == 21 and d_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
         end_game()
         dealer_full_cards()
-        game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
+        game_result_label.configure(text="Нічия! Обидва мають BlackJack!", fg="white")
         return True
 
     elif pl_score == 21 and len(user_hand) == 2:
         end_game()
         dealer_full_cards()
-        game_result_label.configure(text="BlackJack! Ти виграв!")
+        game_result_label.configure(text="BlackJack! Ти виграв!", fg="#00FF00")
         player_score += 1
         player_win.configure(text=f"Гравець: {player_score}")
         return True
@@ -156,26 +156,27 @@ root = Tk()
 root.title("BlackJack")
 root.minsize(width=1200, height=700)
 root.geometry("1200x700")
-root.configure(bg="#006400")
+root.configure(bg="#003300")
 
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
+root.grid_rowconfigure(3, weight=1)
+root.grid_rowconfigure(10, weight=0)
 
-
-header_frame = Frame(root, bg="#006400")
+header_frame = Frame(root, bg="#003300")
 header_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=10)
 
-main_header = Label(header_frame, text="\u2660 BlackJack \u2660", font=("Helvetica", 28, "bold"), bg="#006400", fg="white")
+main_header = Label(header_frame, text="\u2660 BlackJack \u2660", font=("Helvetica", 28, "bold"), bg="#003300", fg="white")
 main_header.pack()
 
 
-score_frame = Frame(root, bg="#006400")
+score_frame = Frame(root, bg="#003300")
 score_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
 
-player_win = Label(score_frame, text="Гравець: 0", font=("Helvetica", 25), bg="#006400", fg="white")
+player_win = Label(score_frame, text="Гравець: 0", font=("Helvetica", 25), bg="#003300", fg="white")
 player_win.pack(side="left", padx=50)
 
-dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 25), bg="#006400", fg="white")
+dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_win.pack(side="right", padx=50)
 
 
@@ -183,50 +184,49 @@ separator = Frame(root, height=2, bg="white")
 separator.grid(row=2, column=0, columnspan=2, sticky="ew", pady=10)
 
 
-cards_frame = Frame(root, bg="#006400")
+cards_frame = Frame(root, bg="#003300")
 cards_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", pady=10)
 
 
-player_column = Frame(cards_frame, bg='#006400')
+player_column = Frame(cards_frame, bg='#003300')
 player_column.pack(side="left", fill="both",expand=True,padx=20)
 
 
-dealer_column = Frame(cards_frame, bg='#006400')
+dealer_column = Frame(cards_frame, bg='#003300')
 dealer_column.pack(side="right",fill="both",expand=True, padx=20)
 
 
-dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 25), bg="#006400", fg="white")
+dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_cards_label.pack(anchor="e", pady=(0, 5))
 
-dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 90), bg="#006400", fg="white")
+dealer_cards = Label(dealer_column, text=dealer_hand, font=("Helvetica", 90), bg="#003300", fg="white")
 dealer_cards.pack(anchor="e", pady=(0, 20))
 
-dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 25), bg="#006400", fg="white")
+dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_score_label.pack(anchor="e")
 
-player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 25), bg="#006400", fg="white")
+player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 25), bg="#003300", fg="white")
 player_cards_label.pack(anchor="w", pady=(0, 5))
 
-player_cards = Label(player_column, text=user_hand, font=("Helvetica", 90), bg="#006400", fg="white")
+player_cards = Label(player_column, text=user_hand, font=("Helvetica", 90), bg="#003300", fg="white")
 player_cards.pack(anchor="w", pady=(0, 20))
 
-player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 25), bg="#006400", fg="white")
+player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 25), bg="#003300", fg="white")
 player_score_label.pack(anchor="w", pady=(0, 20))
 
-
-buttons_frame = Frame(root, bg="#006400")
-buttons_frame.grid(row=4, column=0, columnspan=2, pady=20)
+buttons_frame = Frame(root, bg="#575757")
+buttons_frame.grid(row=10, column=0, columnspan=2, sticky = "ew", pady=(10, 0))
 
 btn_hit = Button(buttons_frame, text="Взяти карту", font=("Helvetica", 14), width=15, bg="#228B22", fg="white", command=update_user_hand)
-btn_hit.grid(row=0, column=0, padx=10)
+btn_hit.pack(side="left", padx=40, pady=10, expand=True)
 
-btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white" , command=update_dealer_hand)
-btn_stand.grid(row=0, column=1, padx=10)
+btn_stand = Button(buttons_frame, text="Зупинитись", font=("Helvetica", 14), width=15, bg="#8B0000", fg="white", command=update_dealer_hand)
+btn_stand.pack(side="left", padx=40, pady=10, expand=True)
 
 btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white", command=start_new_game)
-btn_new.grid(row=0, column=2, padx=10)
+btn_new.pack(side="left", padx=40, pady=10, expand=True)
 
-game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#006400", fg="white")
+game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#003300", fg="white")
 game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 
 btn_new.configure(state="disabled")
