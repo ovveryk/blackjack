@@ -9,17 +9,27 @@ from tkinter import *
 
 
 random.shuffle(deck)
-# print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
 deck_index = 4
 result_messege = None
 dealer_hand = deck[:2]
 user_hand = deck[2:4]
+player_score = 0
+dealer_score = 0
 
 
 def end_game():
     btn_hit.configure(state="disabled")
     btn_stand.configure(state="disabled")
 
+
+def dealer_first_card():
+    dealer_cards.configure(text=[dealer_hand[0], closed_card])
+    dealer_score_label.configure(text=f"Очки: {calculate_score([dealer_hand[0]])}")
+
+
+def dealer_full_cards():
+    dealer_cards.configure(text=dealer_hand)
+    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
 
 def reset_game():
     btn_hit.configure(state="normal")
@@ -29,14 +39,16 @@ def reset_game():
     player_score_label.configure(text=f"Очки:{calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
 
-    dealer_cards.configure(text=dealer_hand)
-    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
+    dealer_first_card()
+
+
+
 
 
 def update_user_hand():
-    global user_hand, deck_index
+    global user_hand, deck_index,dealer_score
 
-    if calculate_score(user_hand) < 21:
+    if calculate_score(user_hand) <= 21:
         user_hand.append(deck[deck_index])
         deck_index += 1
 
@@ -47,45 +59,70 @@ def update_user_hand():
             end_game()
             
             game_result_label.configure(text="Перебір")
+            dealer_score += 1
+            dealer_win.configure(text=f"Дилер: {dealer_score}")
+            dealer_full_cards()
+            
             return
 
         return
 
-    if calculate_score(user_hand > 21):
-        print("Перебір")
-        return
     
 def update_dealer_hand():
-    global dealer_hand, deck_index
+    global user_hand, dealer_hand, deck_index, dealer_score, player_score
     dealer_hand = dealer_hit(dealer_hand, deck_index)
+    dealer_full_cards()
     
     dealer_cards.configure(text=dealer_hand)
     dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
-    end_game()
+    
+    message, win = winner(user_hand,dealer_hand)
+    if win == "dealer":
+        
+        dealer_score += 1
+        game_result_label.configure(text=message)
+        dealer_win.configure(text=f"Дилер: {dealer_score}")
+        end_game()
+        return
+
+    if win == "draw":
+         dealer_full_cards()
+         game_result_label.configure(text="Нічия")
+         end_game()
+         return
+    
+    if win == "user":
+         
+        player_score += 1
+        game_result_label.configure(text=message)
+        player_win.configure(text=f"Гравець: {player_score}")  
+        end_game()
+        return
+    
     return
 
     
-
 def blackjack_new():
-    global dealer_hand, user_hand
+    global dealer_hand, user_hand, player_score
 
-    player_score = calculate_score(user_hand)
-    dealer_score = calculate_score(dealer_hand)
+    pl_score = calculate_score(user_hand)
+    d_score = calculate_score(dealer_hand)
 
-    if player_score == 21 and len(user_hand) == 2:
+    if pl_score == 21 and len(user_hand) == 2:
         end_game()
+        dealer_full_cards()
         game_result_label.configure(text="BlackJack! Ти виграв!")
-        return
-    
-    elif dealer_score == 21 and len(dealer_hand) == 2:
+        player_score += 1
+        player_win.configure(text=f"Гравець: {player_score}")
+        return True
+
+    elif pl_score == 21 and d_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
         end_game()
-        game_result_label.configure(text="BlackJack! Дилер виграв!")
-        return
-    
-    elif player_score == 21 or dealer_score == 21 and len(user_hand) == 2 and len(dealer_hand) == 2:
-        end_game()
+        dealer_full_cards()
         game_result_label.configure(text="Нічия! Обидва мають BlackJack!")
-        return
+        return True
+    return False
+
 
 def start_new_game():
     global counter, dealer_hand,user_hand, deck
@@ -93,13 +130,13 @@ def start_new_game():
     counter = 4
     random.shuffle(deck)
     dealer_hand = deck[:2]
-    user_hand = deck[2:4]   
+    user_hand = deck[2:4]
+
     reset_game()
 
     player_score_label.configure(text=f"Очки: {calculate_score(user_hand)}")
     player_cards.configure(text=user_hand)
-    dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
-    dealer_cards.configure(text=dealer_hand)
+
 
     if blackjack_new():
         dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
@@ -128,10 +165,10 @@ main_header.pack()
 score_frame = Frame(root, bg="#006400")
 score_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
 
-player_win = Label(score_frame, text="Гравець: 0", font=("Helvetica", 18), bg="#006400", fg="white")
+player_win = Label(score_frame, text=f"Гравець: {player_score}", font=("Helvetica", 18), bg="#006400", fg="white")
 player_win.pack(side="left", padx=50)
 
-dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 18), bg="#006400", fg="white")
+dealer_win = Label(score_frame, text=f"Дилер: {dealer_score}", font=("Helvetica", 18), bg="#006400", fg="white")
 dealer_win.pack(side="right", padx=50)
 
 
@@ -185,110 +222,7 @@ btn_new.grid(row=0, column=2, padx=10)
 game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#006400", fg="white")
 game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 
+dealer_first_card()
 root.mainloop()
-
-
-
-
-
-
-
-
-
-# def main():
-#     # print(f"Перемішана колода:\n{deck}")  # Потрібно буде видалити, зараз використовується для тестів
-#     # print(computer_hand)
-#     print("============================")
-#     print("Вітаю! Хочеш почати гру в BlackJack? y/n")
-#     print("============================")
-#     play_game = input("Введи ==>")
-#     if play_game.lower() == "n" or play_game.lower() != "y":
-#         print("============================")
-#         print("Шкода, що не захотіли програти гроші :) ")
-#         print("============================")
-#         return
-    
-#     while True:
-#         random.shuffle(deck)
-
-#         user_hand = deck[2:4]
-#         dealer_hand = deck[:2]
-#         calculate_score_user = calculate_score(user_hand)
-#         calculate_score_dealer = calculate_score(dealer_hand)
-#         print("=========== Карти ==========")
-#         print(f"Карти дилера: {dealer_hand[0], closed_card}, в дилера {calculate_score([dealer_hand[0]])} очок \nТвої карти: {user_hand}, в тебе {calculate_score_user} очок ")
-#         print("============================")
-
-
-#         if len(user_hand) == 2 and len(dealer_hand) == 2:
-
-#             if (calculate_score_user == 21 and calculate_score_dealer == 21) or (calculate_score_user == 22 and calculate_score_dealer == 22):
-#                     print("=== BlackJack ===")
-#                     print("Нічия! Обидва мають BlackJack! ")
-#                     print("============================")
-#                     print("Хочеш зіграти ще раз? y/n")
-#                     print("============================")
-
-#                     new_game = input("Введи ==>")
-#                     if new_game.lower() == "n":
-#                         print("============================")
-#                         print("Дякую за гру! Заходи ще програти гроші :) ")
-#                         print("============================")
-#                         break
-#                     else:
-#                         if new_game.lower() == "y":
-#                             continue
-
-#             elif calculate_score_user == 22 or calculate_score_user == 21:
-#                     print("============================")
-#                     print("BlackJack User")
-#                     print("============================")
-#                     print("Хочеш зіграти ще раз? y/n")
-#                     print("============================")
-#                     new_game = input("Введи ==>")
-#                     if new_game.lower() == "n":
-#                         print("============================")
-#                         print("Дякую за гру! Заходи ще програти гроші :) ")
-#                         print("============================")
-#                         break
-#                     else:
-#                         if new_game.lower() == "y":
-#                             continue
-
-#             elif calculate_score_dealer == 22 or calculate_score_dealer == 21:
-#                     print("BlackJack Dealer")
-#                     print("Хочеш зіграти ще раз? y/n")
-#                     print("============================")
-#                     new_game = input("Введи ==>")
-#                     if new_game.lower() == "n":
-#                         print("Дякую за гру! Заходи ще програти гроші :) ")
-#                         print("============================")
-#                         break
-#                     else:
-#                         continue
-
-
-#         user_hand = hit_card(user_hand)
-
-#         dealer_hit(dealer_hand)
-#         winner(user_hand, dealer_hand)
-#         print(f"Твої карти {user_hand} \nКарти дилера:{dealer_hand}")
-#         print("============================")
-#         print("Хочеш зіграти ще раз? y/n")
-#         print("============================")
-#         new_game = input("Введи ==>")
-
-#         if new_game.lower() == "n":
-#             print("============================")
-#             print("Дякую за гру! Заходи ще програти гроші :) ")
-#             print("============================")
-#             break
-
-# main()
-
-
-
-
-
 
 
