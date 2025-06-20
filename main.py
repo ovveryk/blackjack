@@ -23,7 +23,6 @@ def end_game():
     btn_new.configure(state="normal")
     
 
-
 def dealer_first_card():
     dealer_cards.configure(text=[dealer_hand[0], closed_card])
     dealer_score_label.configure(text=f"Очки: {calculate_score([dealer_hand[0]])}")
