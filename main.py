@@ -185,7 +185,7 @@ separator.grid(row=2, column=0, columnspan=2, sticky="ew", pady=10)
 
 
 cards_frame = Frame(root, bg="#003300")
-cards_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", pady=10)
+cards_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", pady=70)
 
 
 player_column = Frame(cards_frame, bg='#003300')
@@ -214,7 +214,7 @@ player_cards.pack(anchor="w", pady=(0, 20))
 player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 25), bg="#003300", fg="white")
 player_score_label.pack(anchor="w", pady=(0, 20))
 
-buttons_frame = Frame(root, bg="#575757")
+buttons_frame = Frame(root, bg="#D9D6C7")
 buttons_frame.grid(row=10, column=0, columnspan=2, sticky = "ew", pady=(10, 0))
 
 btn_hit = Button(buttons_frame, text="Взяти карту", font=("Helvetica", 14), width=15, bg="#228B22", fg="white", command=update_user_hand)
