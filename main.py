@@ -18,6 +18,16 @@ dealer_score = 0
 
 
 def end_game():
+    """
+    Завершує гру, оновлюючи стан кнопок у графічному інтерфейсі.
+
+    Вимикає кнопки "Взяти карту" (btn_hit) і "Зупинитися" (btn_stand), 
+    щоб запобігти подальшим діям гравця, та активовує кнопку 
+    "Нова гра" (btn_new), дозволяючи почати нову гру.
+
+    Returns:
+        None
+    """
     btn_hit.configure(state="disabled")
     btn_stand.configure(state="disabled")
     btn_new.configure(state="normal")
@@ -25,16 +35,42 @@ def end_game():
 
 
 def dealer_first_card():
+    '''
+    Роздає першу карту дилера, приховуючи другу карту і рахує очки 
+    тільки відкритої карти.
+
+    Оновлює інтерфейс:
+    - Відображає першу карту дилера.
+    - Приховує другу карту, використовується зміна "closed_card".
+    - Відображаються очки лише відкритої карти за допомогою функціх "calculate_score".
+     
+    Returns:
+        None
+    '''
     dealer_cards.configure(text=[dealer_hand[0], closed_card])
     dealer_score_label.configure(text=f"Очки: {calculate_score([dealer_hand[0]])}")
 
 
 def dealer_full_cards():
+    '''
+    Роздає всі карти дилера, рахуючи очки всіх карт.
+
+    Оновлює інтерфейс:
+    - Відображає всі карти дилера
+    - Відображає очки всіх карт дилера за допомогою функції "calculate_score".
+
+    Returts:
+        None
+    '''
     dealer_cards.configure(text=dealer_hand)
     dealer_score_label.configure(text=f"Очки: {calculate_score(dealer_hand)}")
 
 
 def reset_game():
+    '''
+    Скидає значення кнопок до початкового значення і оновлює інтрефейс 
+    
+    '''
     btn_hit.configure(state="normal")
     btn_stand.configure(state="normal")
     btn_new.configure(state="disabled")
@@ -46,6 +82,9 @@ def reset_game():
 
 
 def update_user_hand():
+    '''
+
+    '''
     global user_hand, deck_index, dealer_score
 
     if calculate_score(user_hand) <= 21:
