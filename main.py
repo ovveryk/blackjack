@@ -1,7 +1,6 @@
 # Головна функція гри
 from score import calculate_score
 from cards import deck, closed_card
-from hit import hit_card
 from game_logic import winner
 from dealer import dealer_hit
 import random
@@ -22,7 +21,7 @@ def end_game():
     Завершує гру, оновлюючи стан кнопок у графічному інтерфейсі.
 
     Вимикає кнопки "Взяти карту" (btn_hit) і "Зупинитися" (btn_stand), 
-    щоб запобігти подальшим діям гравця, та активовує кнопку 
+    щоб запобігти подальшим діям гравця, та активовує кнопку  
     "Нова гра" (btn_new), дозволяючи почати нову гру.
 
     Returns:
@@ -40,9 +39,9 @@ def dealer_first_card():
     тільки відкритої карти.
 
     Оновлює інтерфейс:
-    - Відображає першу карту дилера.
-    - Приховує другу карту, використовується зміна "closed_card".
-    - Відображаються очки лише відкритої карти за допомогою функціх "calculate_score".
+        - Відображає першу карту дилера.
+        - Приховує другу карту, використовується зміна "closed_card".
+        - Відображаються очки лише відкритої карти за допомогою функціх "calculate_score".
      
     Returns:
         None
@@ -56,8 +55,8 @@ def dealer_full_cards():
     Роздає всі карти дилера, рахуючи очки всіх карт.
 
     Оновлює інтерфейс:
-    - Відображає всі карти дилера
-    - Відображає очки всіх карт дилера за допомогою функції "calculate_score".
+        - Відображає всі карти дилера
+        - Відображає очки всіх карт дилера за допомогою функції "calculate_score".
 
     Returts:
         None
@@ -68,7 +67,21 @@ def dealer_full_cards():
 
 def reset_game():
     '''
-    Скидає значення кнопок до початкового значення і оновлює інтрефейс 
+    Скидає стан гри до початкового та оновлює інтерфейс.
+
+    Вмикає кнопки "Взяти карту" та "Зупинитися", а кнопку "Нова гра" вимикає, 
+    щоб запобігти передчасному перезапуску. Очищає поле з результатом гри, 
+    оновлює карти гравця та дилера, і викликає функцію `dealer_first_card()` 
+    для відображення початкового стану дилера.
+
+    Оновлює інтерфейс:
+        - Увімкнення/вимкнення кнопок.
+        - Скидання тексту результату гри.
+        - Відображення нових карт гравця.
+        - Запуск першого ходу дилера.
+
+    Returns:
+        None
     
     '''
     btn_hit.configure(state="normal")
@@ -83,7 +96,24 @@ def reset_game():
 
 def update_user_hand():
     '''
+    Додає нову карту гравцю, оновлює інтерфейс та перевіряє перебір.
 
+    Якщо сума очок гравця не перевищує 21, функція додає наступну карту з колоди 
+    до руки гравця, оновлює кількість очок та відображає нову руку. 
+
+    Якщо після добору сума очок перевищує 21:
+        - Гра завершується викликом `end_game()`.
+        - Виводиться повідомлення "Перебір".
+        - Дилер отримує одне очко.
+        - Відображається повна рука дилера.
+
+    Залежності:
+        - Використовує глобальні змінні: `user_hand`, `deck_index`, `dealer_score`, `deck`.
+        - Оновлює елементи інтерфейсу: `player_score_label`, `player_cards`, `game_result_label`, `dealer_win`.
+        - Викликає зовнішні функції: `calculate_score()`, `end_game()`, `dealer_full_cards()`.
+
+    Returns:
+        None
     '''
     global user_hand, deck_index, dealer_score
 
@@ -107,6 +137,30 @@ def update_user_hand():
     
     
 def update_dealer_hand():
+
+    '''
+    Оновлює руку дилера, обчислює результ та завершує гру.
+
+    Виконує:
+        - Викликає "dealer_hit()", для добору карт дилером.
+        - Оновлює інтерфейс: карти дилера, очки, повна рука.
+        - Перевіряє наявність BlackJack у дилера.
+        - Використовує "winner()" для визначення переможця.
+        - Ононвлює рахунок в залежності від переможця.
+        - Виводить повідомлення про результат гри.
+    
+    Глобальні змінні:
+        dealer_hand (list): карти дилера. 
+        deck_index (int): індекс поточної карти в колоді.
+        dealer_score (int): кількість перемог дилера.
+        player_score (int): кількість перемог гравця.
+        user_hand (list): карти гравця.
+
+    Returns: 
+        None
+         
+    '''
+
     global dealer_hand, deck_index, dealer_score, player_score, user_hand
     dealer_hand = dealer_hit(dealer_hand, deck_index)
     d_score = calculate_score(dealer_hand)
@@ -149,6 +203,30 @@ def update_dealer_hand():
     return
 
 def blackjack_new():
+
+    '''
+    Перевіряє BlackJack на початковій роздачі, як у гравця так і у дилера.
+
+    Перевіряє такі випадки:
+        - Обидва мають BlackJack
+        - Гравець має BlackJack, автоматична перемога гравця.
+    
+    Якщо хоч один з цих випадків підходить, гра завершується ("end_game()"),
+    виводится відповідне повідомлення на екран, оновлюється рахунок, виводяться всі 
+    карти дилерра ("dealer_full_cards()").
+
+    Глобальні змінні: 
+    global dealer_hand (list): карти дилера
+    user_hand (list): карти гравця
+    player_score (int): рахунок гравця
+    dealer_score (int): рахунок дилера
+
+    Returns:
+        bool: True, якщо виявлено BlackJack або  нічия з BlackJack.
+              False, якщо гра триває.  
+
+    '''
+
     global dealer_hand, user_hand, player_score, dealer_score
 
     pl_score = calculate_score(user_hand)
@@ -172,6 +250,29 @@ def blackjack_new():
 
 
 def start_new_game():
+
+    '''
+    Запускає нову гру BlackJack, ініціалізує колоду, роздає карти та оновлює інтерфейс.
+
+    Виконує наступні зміни: 
+        - Перемішує колоду (deck)
+        - Роздає по дві карти гравцю та дилеру.
+        - Скидає інтерфейс (reset_game()) 
+        - Оновлення відображення карт і очок дилера
+        - Перевіряє на початку BlackJack (blackjack_new())
+        - Якщо гравець або обидва мають BlackJack, показує карти дилера і показує очки.
+
+    Глобальні змінні:
+        counter (int):
+        dealer_hand (list):
+        user_hand (list):
+        deck (list):
+        deck_index (int):
+
+    Returns: 
+        Nonep.
+    '''
+
     global counter, dealer_hand,user_hand, deck, deck_index
 
     deck_index = 4
@@ -190,25 +291,27 @@ def start_new_game():
 
 blackjack_new()
 
-
+# === Ініціалізація вікна ===
 root = Tk()
 root.title("BlackJack")
 root.minsize(width=1200, height=700)
 root.geometry("1200x700")
 root.configure(bg="#003300")
 
+# === Налаштування сітки ===
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure(3, weight=1)
 root.grid_rowconfigure(10, weight=0)
 
+# === Заголовок ===
 header_frame = Frame(root, bg="#003300")
 header_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=10)
 
 main_header = Label(header_frame, text="\u2660 BlackJack \u2660", font=("Helvetica", 28, "bold"), bg="#003300", fg="white")
 main_header.pack()
 
-
+# === Рахунок гравця та дилера ===
 score_frame = Frame(root, bg="#003300")
 score_frame.grid(row=1, column=0, columnspan=2, sticky="ew")
 
@@ -218,23 +321,23 @@ player_win.pack(side="left", padx=50)
 dealer_win = Label(score_frame, text="Дилер: 0", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_win.pack(side="right", padx=50)
 
-
+# === Роздільник ===
 separator = Frame(root, height=2, bg="white")
 separator.grid(row=2, column=0, columnspan=2, sticky="ew", pady=10)
 
-
+# === Секція з картами ===
 cards_frame = Frame(root, bg="#003300")
 cards_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", pady=70)
 
-
+# === Колонка гравця ===
 player_column = Frame(cards_frame, bg='#003300')
 player_column.pack(side="left", fill="both",expand=True,padx=20)
 
-
+# === Колонка дилера ===
 dealer_column = Frame(cards_frame, bg='#003300')
 dealer_column.pack(side="right",fill="both",expand=True, padx=20)
 
-
+# === Карти дилера ===
 dealer_cards_label = Label(dealer_column, text="Карти дилера:", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_cards_label.pack(anchor="e", pady=(0, 5))
 
@@ -244,6 +347,7 @@ dealer_cards.pack(anchor="e", pady=(0, 20))
 dealer_score_label = Label(dealer_column, text=f"Очки: {calculate_score(dealer_hand)}", font=("Helvetica", 25), bg="#003300", fg="white")
 dealer_score_label.pack(anchor="e")
 
+# === Карти гравця ===
 player_cards_label = Label(player_column, text="Карти гравця:", font=("Helvetica", 25), bg="#003300", fg="white")
 player_cards_label.pack(anchor="w", pady=(0, 5))
 
@@ -253,6 +357,7 @@ player_cards.pack(anchor="w", pady=(0, 20))
 player_score_label = Label(player_column, text=f"Очки: {calculate_score(user_hand)}", font=("Helvetica", 25), bg="#003300", fg="white")
 player_score_label.pack(anchor="w", pady=(0, 20))
 
+# === Кнопки керування грою === 
 buttons_frame = Frame(root, bg="#D9D6C7")
 buttons_frame.grid(row=10, column=0, columnspan=2, sticky = "ew", pady=(10, 0))
 
@@ -265,6 +370,7 @@ btn_stand.pack(side="left", padx=40, pady=10, expand=True)
 btn_new = Button(buttons_frame, text="Нова гра", font=("Helvetica", 14), width=15, bg="#1E90FF", fg="white", command=start_new_game)
 btn_new.pack(side="left", padx=40, pady=10, expand=True)
 
+# === Вивід результату гри ===
 game_result_label = Label(root, text=f"", font=("Helvetica", 20), bg="#003300", fg="white")
 game_result_label.grid(row=5, column=0, columnspan=2, pady=20)
 

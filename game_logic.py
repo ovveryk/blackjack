@@ -1,6 +1,21 @@
-# Hit, Deal, стратегія комп’ютера
-
 from score import calculate_score
+
+'''
+Визначає переможця гри на основі очок дилера і гравця.
+
+Функція використовує "calculate_score()" для облчислення очок обох сторін 
+і повертає текстове повідомлення з повідомленням з результатом гри і також 
+повертає ідентифікатор переможця.
+
+Args:
+    player_score (list): Список карт гравця 
+    dealer_score (list): Список карт дилера
+
+Returns: 
+    tuple:
+        str: Повідомлення про результат гри (Наприклад: "Ти виграв!", "Ти програв!" та інші ).
+        str: Хто переміг - "dealer", "user", "draw"
+'''
 
 def winner(player_hand, dealer_hand):
     player_score = calculate_score(player_hand)
